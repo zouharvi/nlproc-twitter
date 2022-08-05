@@ -3,6 +3,12 @@
 from twitter import *
 from keys import *
 import subprocess
+import argparse
+
+args = argparse.ArgumentParser()
+args.add_argument("-p", "--page", type=int, help="Which page to start from", default=1)
+args.add_argument("-q", "--query", default="#NLProc")
+args = args.parse_args()
 
 t = Twitter(
     auth=OAuth(
@@ -11,11 +17,9 @@ t = Twitter(
     )
 )
 
-start_page = int(input("Which page to start from? E.g. 11: "))
-
-for page in range(start_page, 100+1):
+for page in range(args.page, 100+1):
     print("Page", page)
-    result = t.users.search(q="#NLProc", count=20, page=page)
+    result = t.users.search(q=args.query, count=20, page=page)
     for user in result:
         if not user["following"] and user["friends_count"] / user["followers_count"] >= 0.75 and user["followers_count"] >= 20:
             print(f"https://www.twitter.com/{user['screen_name']}  ({user['name']}):  ", f'{user["friends_count"]} / {user["followers_count"]}', user['description'])
