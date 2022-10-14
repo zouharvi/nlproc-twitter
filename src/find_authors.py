@@ -86,6 +86,8 @@ authors_out = sorted(authors_out)
 random.seed(0)
 random.shuffle(authors_out)
 
+print(f"The given paper cites {len(authors_out)} authors in total")
+
 for author in tqdm.tqdm(authors_out):
     results = t.users.search(q=author, count=10, page=0)
     hit = False
