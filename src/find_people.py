@@ -6,7 +6,10 @@ import subprocess
 import argparse
 
 args = argparse.ArgumentParser()
-args.add_argument("-p", "--page", type=int, help="Which page to start from", default=1)
+args.add_argument(
+    "-p", "--page", type=int,
+    help="Which page to start from", default=1
+)
 args.add_argument("-q", "--query", default="#NLProc")
 args = args.parse_args()
 
@@ -14,18 +17,19 @@ t = Twitter(
     auth=OAuth(
         token=ACCESS_TOKEN, token_secret=ACCESS_TOKEN_SECRET,
         consumer_key=API_KEY, consumer_secret=API_KEY_SECRET
-    )
+    ),
+    retry=True,
 )
 
 buffer = 0
 opened = set()
-for page in range(args.page, args.page+20):
+for page in range(args.page, args.page + 20):
     print("\nPage", page)
     result = t.users.search(q=args.query, count=20, page=page)
     for user in result:
         if user["following"]:
             continue
-        if user["friends_count"]  < 0.75 * user["followers_count"]:
+        if user["friends_count"] < 0.75 * user["followers_count"]:
             continue
         if user["followers_count"] < 50:
             continue
@@ -33,7 +37,8 @@ for page in range(args.page, args.page+20):
         # fetch timeline
         # will fail if profile is private
         try:
-            user_timeline = t.statuses.user_timeline(screen_name=user['screen_name'])
+            user_timeline = t.statuses.user_timeline(
+                screen_name=user['screen_name'])
             last_active = max([
                 int(tweet["created_at"].split()[-1])
                 for tweet in user_timeline
@@ -43,14 +48,19 @@ for page in range(args.page, args.page+20):
                 continue
         except:
             continue
-        
+
         if user['screen_name'] in opened:
             print("No more users found")
             exit()
         opened.add(user['screen_name'])
 
-        print(f"https://www.twitter.com/{user['screen_name']}  ({user['name']})")
-        print('Following/followers:', f'{user["friends_count"]} / {user["followers_count"]}')
+        print(
+            f"https://www.twitter.com/{user['screen_name']}  ({user['name']})"
+        )
+        print(
+            'Following/followers:',
+            f'{user["friends_count"]} / {user["followers_count"]}'
+        )
         print("Description:        ", user['description'].replace("\n", "\\n"))
         print("Last activity:      ", last_active)
 
@@ -61,6 +71,12 @@ for page in range(args.page, args.page+20):
                 pass
             else:
                 exit()
-            
+
         buffer += 1
-        subprocess.Popen(["flatpak", "run", "org.mozilla.firefox", "--", f"https://www.twitter.com/{user['screen_name']}"], stderr=subprocess.DEVNULL)
+        subprocess.Popen(
+            [
+                "flatpak", "run", "org.mozilla.firefox", "--",
+                f"https://www.twitter.com/{user['screen_name']}"
+            ],
+            stderr=subprocess.DEVNULL
+        )

@@ -2,7 +2,6 @@
 
 from twitter import *
 from keys import *
-import subprocess
 import argparse
 
 args = argparse.ArgumentParser()
@@ -13,7 +12,8 @@ t = Twitter(
     auth=OAuth(
         token=ACCESS_TOKEN, token_secret=ACCESS_TOKEN_SECRET,
         consumer_key=API_KEY, consumer_secret=API_KEY_SECRET
-    )
+    ),
+    retry=True,
 )
 
 response = t.users.lookup(screen_name=args.handle)[0]

@@ -26,7 +26,8 @@ t = Twitter(
     auth=OAuth(
         token=ACCESS_TOKEN, token_secret=ACCESS_TOKEN_SECRET,
         consumer_key=API_KEY, consumer_secret=API_KEY_SECRET
-    )
+    ),
+    retry=True,
 )
 
 if not args.bib and not args.arxiv and not args.s2:
@@ -95,21 +96,27 @@ for author in tqdm.tqdm(authors_out):
     if len(results) > 5:
         print("Too many results, skipping", author)
         continue
-    
+
     for user in results:
         # some basic heuristics
         if user["following"]:
             continue
         if len(user['description']) == 0:
-            continue 
+            continue
         if user["followers_count"] < 50:
             continue
 
-        print("\nLooking for", " "*30, author)
+        print("\nLooking for", " " * 30, author)
         twitter_url = f"https://www.twitter.com/{user['screen_name']}"
         print(f"{twitter_url:<40}  ({user['name']})")
-        print("Following/followers:", " "*21, f'{user["friends_count"]} / {user["followers_count"]}')
-        print("Description:        ", " "*21, user['description'].replace("\n", "\\n"))
+        print(
+            "Following/followers:", " " * 21,
+            f'{user["friends_count"]} / {user["followers_count"]}'
+        )
+        print(
+            "Description:        ", " " * 21,
+            user['description'].replace("\n", "\\n")
+        )
         hit = True
 
     if hit:
