@@ -30,10 +30,16 @@ for page in range(args.page, args.page+20):
         if user["followers_count"] < 50:
             continue
 
+        # fetch timeline
         # will fail if profile is private
         try:
-            last_activity = t.statuses.user_timeline(screen_name=user['screen_name'], count=1)[0]["created_at"]
-            if int(last_activity.split(" ")[-1]) < 2022:
+            user_timeline = t.statuses.user_timeline(screen_name=user['screen_name'])
+            last_active = max([
+                int(tweet["created_at"].split()[-1])
+                for tweet in user_timeline
+            ] + [0])
+
+            if last_active < 2022:
                 continue
         except:
             continue
@@ -46,7 +52,7 @@ for page in range(args.page, args.page+20):
         print(f"https://www.twitter.com/{user['screen_name']}  ({user['name']})")
         print('Following/followers:', f'{user["friends_count"]} / {user["followers_count"]}')
         print("Description:        ", user['description'].replace("\n", "\\n"))
-        print("Last activity:      ", last_activity)
+        print("Last activity:      ", last_active)
 
         if buffer >= 10:
             buffer = 0
