@@ -2,8 +2,8 @@
 
 A bunch of small scripts to:
 - Find authors on Twitter which you cite in your work.
-- Find people on Twitter which tweet about things that I'm interested in.
-- Unfollow inactive people
+- Find people on Twitter which tweet about things that you're interested in.
+- Unfollow inactive people.
 
 ## Usage
 
