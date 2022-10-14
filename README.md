@@ -2,7 +2,7 @@
 
 A small scripts to:
 - Find authors on Twitter which you cite in your work.
-- Find people on Twitter which (1) tweet about things that I'm interested in, (2) have non-protected profiles and (3) are active.
+- Find people on Twitter which tweet about things that I'm interested in.
 
 ## Usage
 

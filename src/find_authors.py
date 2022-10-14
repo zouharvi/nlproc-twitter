@@ -91,6 +91,11 @@ print(f"The given paper cites {len(authors_out)} authors in total")
 for author in tqdm.tqdm(authors_out):
     results = t.users.search(q=author, count=10, page=0)
     hit = False
+
+    if len(results) > 5:
+        print("Too many results, skipping", author)
+        continue
+    
     for user in results:
         # some basic heuristics
         if user["following"]:
