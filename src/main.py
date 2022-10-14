@@ -17,12 +17,44 @@ t = Twitter(
     )
 )
 
-for page in range(args.page, 100+1):
-    print("Page", page)
+buffer = 0
+opened = set()
+for page in range(args.page, args.page+20):
+    print("\nPage", page)
     result = t.users.search(q=args.query, count=20, page=page)
     for user in result:
-        if not user["following"] and user["friends_count"] / user["followers_count"] >= 0.75 and user["followers_count"] >= 20:
-            print(f"https://www.twitter.com/{user['screen_name']}  ({user['name']}):  ", f'{user["friends_count"]} / {user["followers_count"]}', user['description'])
+        if user["following"]:
+            continue
+        if user["friends_count"]  < 0.75 * user["followers_count"]:
+            continue
+        if user["followers_count"] < 50:
+            continue
 
-            if input("Open? ").lower()[0] == "y":
-                subprocess.Popen(["flatpak", "run", "org.mozilla.firefox", "--", f"https://www.twitter.com/{user['screen_name']}"], stderr=subprocess.DEVNULL)
+        # will fail if profile is private
+        try:
+            last_activity = t.statuses.user_timeline(screen_name=user['screen_name'], count=1)[0]["created_at"]
+            if int(last_activity.split(" ")[-1]) < 2022:
+                continue
+        except:
+            continue
+        
+        if user['screen_name'] in opened:
+            print("No more users found")
+            exit()
+        opened.add(user['screen_name'])
+
+        print(f"https://www.twitter.com/{user['screen_name']}  ({user['name']})")
+        print('Following/followers:', f'{user["friends_count"]} / {user["followers_count"]}')
+        print("Description:        ", user['description'].replace("\n", "\\n"))
+        print("Last activity:      ", last_activity)
+
+        if buffer >= 10:
+            buffer = 0
+            response = input("Continue with the next batch? [y/n]")
+            if len(response) > 0 and response.lower()[0] == "y":
+                pass
+            else:
+                exit()
+            
+        buffer += 1
+        subprocess.Popen(["flatpak", "run", "org.mozilla.firefox", "--", f"https://www.twitter.com/{user['screen_name']}"], stderr=subprocess.DEVNULL)
