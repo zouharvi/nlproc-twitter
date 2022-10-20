@@ -29,3 +29,12 @@ Run `src/find_people.py -q "NLProc"` to find people who have _NLProc_ in their b
 
 - Why are Twitter credentials necessary? To access the API and also filter out profiles which you already follow.
 - How do you get Twitter credentials? [This requires some reading](https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api).
+
+
+# Citation
+
+- RQ1: What is the proportion of paper authors which are cited?
+  - What is the number of distinct self-citations?
+- RQ2: Which author cites themselves the most?
+  - Is self-citation dependent on author popularity?
+- RQ3: What are the properties of self-cited papers?
