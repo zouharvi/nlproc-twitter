@@ -36,6 +36,28 @@ for author, cited_authors in author_to_author.items():
         cited_from = author_to_author_copy[r_author][author]
         author_to_author_score.append((author, r_author, cited_to, cited_from))
 
+i = 0
 author_to_author_score.sort(key=lambda x: x[2]+x[3], reverse=True)
-for author, r_author, cited_to, cited_from in author_to_author_score[:20]:
-    print(f"{author:>20} cited {r_author:<20} {cited_to:<3} times and reverse {cited_from}")
+printed = set()
+while i < 40:
+    i += 1
+    author, r_author, cited_to, cited_from = author_to_author_score.pop(0)
+    if (author, r_author) in printed:
+        continue
+    printed.add((author, r_author))
+    rest = f"and reverse {cited_from}"
+    if author == r_author:
+        r_author = "themselves"
+        rest = ""
+
+    print(f"{author:>25} cited {r_author:<25} {cited_to:<3} times {rest}")
+
+
+self_favourite = []
+for author, cited_authors in author_to_author.items():
+    cited_authors = sorted(list(cited_authors.items()), key=lambda x: x[1], reverse=True)
+    favourite_author = cited_authors[0]
+    if favourite_author[1] < 2:
+        continue
+    self_favourite.append(favourite_author[0] == author)
+print(f"People who's favourite author is themselves: {np.average(self_favourite):.2%}")
