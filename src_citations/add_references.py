@@ -69,7 +69,7 @@ data = pd.read_parquet(args.data)
 # clear file
 f = open(args.output, "a")
 
-data = data[1216+634:]
+# data = data[1216+634+11211:]
 
 
 for row_i, row in tqdm.tqdm(
