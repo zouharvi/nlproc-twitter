@@ -13,12 +13,12 @@ Prerequisites:
 2. Install `pip3 install -r requirement.txt`
 3. Fill `src/keys_mock.py` with your credentials and rename it to `src/keys.py` .
 
-### Usage (Find Authors)
+### Usage (Find cited authors)
 
-Run `src/find_authors.py -b path_to_bibfile.bib` to get a list of links to cited authors which you do not yet follow.
+Run `src/find_cited_authors.py -b path_to_bibfile.bib` to get a list of links to cited authors which you do not yet follow.
 This works also with `src/find_authors.py -a arxiv_link` and `src/find_authors.py -s semanticscholar_link` .
 
-### Usage (Find People)
+### Usage (Find people)
 
 Run `src/find_people.py -q "NLProc"` to find people who have _NLProc_ in their bio. The program will automatically open the Twitter profile page<sup>1</sup> of the first 10 hits and then asks you again if you'd like to continue.<sup>2</sup>
 

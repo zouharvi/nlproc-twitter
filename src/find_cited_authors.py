@@ -93,7 +93,7 @@ for author in tqdm.tqdm(authors_out):
     results = t.users.search(q=author, count=10, page=0)
     hit = False
 
-    if len(results) > 5:
+    if len(results) > 8:
         print("Too many results, skipping", author)
         continue
 
