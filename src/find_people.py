@@ -10,6 +10,22 @@ args.add_argument(
     "-p", "--page", type=int,
     help="Which page to start from", default=1
 )
+args.add_argument(
+    "-b", "--buffer", type=int,
+    help="How many profiles to open before asking for input", default=20
+)
+args.add_argument(
+    "-fc", "--friend-coefficient", type=float,
+    help="What proportion of followers must the person follow", default=0.75,
+)
+args.add_argument(
+    "-nk", "--negative-keywords", type=list, nargs="+",
+    help="List of words to avoid",
+    default=[
+        "ceo", "blockchain", "crypto", "bot",
+        "stock", "finance", "roboticts", "investment"
+    ],
+)
 args.add_argument("-q", "--query", default="#NLProc")
 args = args.parse_args()
 
@@ -21,6 +37,7 @@ t = Twitter(
     retry=True,
 )
 
+negative_keywords = set(args.negative_keywords)
 buffer = 0
 opened = set()
 for page in range(args.page, args.page + 20):
@@ -29,9 +46,15 @@ for page in range(args.page, args.page + 20):
     for user in result:
         if user["following"]:
             continue
-        if user["friends_count"] < 0.75 * user["followers_count"]:
+        if user["friends_count"] < args.friend_coefficient * user["followers_count"]:
             continue
         if user["followers_count"] < 50:
+            continue
+        user_keywords = set((
+            user["description"] + " " +
+            user["name"]
+        ).lower().split())
+        if len(negative_keywords & user_keywords) > 0:
             continue
 
         # fetch timeline
@@ -44,7 +67,7 @@ for page in range(args.page, args.page + 20):
                 for tweet in user_timeline
             ] + [0])
 
-            if last_active < 2022:
+            if last_active < 2023:
                 continue
         except:
             continue
@@ -64,7 +87,7 @@ for page in range(args.page, args.page + 20):
         print("Description:        ", user['description'].replace("\n", "\\n"))
         print("Last activity:      ", last_active)
 
-        if buffer >= 10:
+        if buffer >= args.buffer:
             buffer = 0
             response = input("Continue with the next batch? [y/n]")
             if len(response) > 0 and response.lower()[0] == "y":

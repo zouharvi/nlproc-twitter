@@ -7,7 +7,7 @@ import subprocess
 import argparse
 
 args = argparse.ArgumentParser(
-    description="Provide links to people you follow but which have been inactive since 2020"
+    description="Provide links to people you follow but which have been inactive since 2022"
 )
 args.add_argument("--id", default="2603766076")
 args.add_argument("--cursor", default="-1")
@@ -51,7 +51,9 @@ while True:
             for tweet in user_timeline
         ] + [0])
 
-        if last_active >= 2021:
+        print(user["screen_name"], last_active)
+
+        if last_active >= 2022:
             continue
 
         twitter_url = f"https://www.twitter.com/{user['screen_name']}"
